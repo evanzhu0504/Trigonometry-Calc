@@ -1,8 +1,14 @@
 import math
 import sys
-import discord
-from discord.ext import commands
-
+import functools
+from functools import partial
+import pwinput
+import tkinter
+from tkinter import *
+from math import *
+import sys
+import matplotlib.pyplot as plt
+import numpy as np
 
 input("If a line of code gets stuck like this one, try hitting the \"Enter\" key on your keyboard!!!")
 print("You will have to login in order to continue")
@@ -25,8 +31,8 @@ def mainauth():
     print("Welcome to the login page")
 
     while True:
-        username = input("Enter your username:")
-        password = input("Enter your password:")
+        username = pwinput.pwinput(prompt="Enter your username:")
+        password = pwinput.pwinput(prompt="Enter your password:")
 
         if authenticate(username, password):
             print("Authentication Success")
@@ -53,6 +59,7 @@ def trigcal():
         print("4. Rule of Sines, while you know two sides")
         print("5. Rule of Cosines while you have two sides and an angle or you know all three sides")
         print("6. Area of the triangle while you have two sides and an angle")
+        print("7. Use the graphing calculator")
         print("Enter 'exit' to exit the program")
         print()
 
@@ -64,7 +71,7 @@ def trigcal():
 
         try:
             mode = int(user_choice)
-            if 1 <= mode <= 6:
+            if 1 <= mode <= 7:
                 if mode == 1:
                     pythagoras()
                 elif mode == 2:
@@ -77,45 +84,82 @@ def trigcal():
                     cosrule()
                 elif mode == 6:
                     areatriangle()
+                elif mode == 7:
+                    graphing()
+
             else:
-                print("You did not enter a valid mode (1-6).")
+                print("You did not enter a valid mode (1-7).")
         except ValueError:
-            print("Please enter a valid mode (1-6) or 'exit' to exit the program.")
+            print("Please enter a valid mode (1-7) or 'exit' to exit the program.")
 
 
 def pythagoras():
-    notfinished = True
-    while notfinished:
-        try:
-            mode = int(input(
-                "Please choose the mode: 1 for finding the hypotenuse and 2 for finding one side when you have a hypotenuse and a side already: "))
-            if mode in [1, 2]:
-                if mode == 1:
-                    side1 = float(input("Put in your first side: "))
-                    side2 = float(input("Put in your second side: "))
-                    result = math.hypot(side1, side2)
-                    print(f"The hypotenuse = sqrt({side1} + {side2})")
-                    print()
-                    print(f"The hypotenuse is {result} long. (Remember The 3 significant figure rule)")
-                    print()
-                    notfinished = False
-                elif mode == 2:
-                    side1 = float(input("Tell me your hypotenuse: "))
-                    side2 = float(input("Tell me the length of your other known side: "))
-                    result = math.sqrt((side1 ** 2 - side2 ** 2))
-                    print(f"Hypotenuse = sqrt({side1} - {side2})")
-                    print()
-                    print(f"The Hypotenuse is {result} long. (Don't forget the 3 significant figure rule)")
-                    print()
-                    notfinished = False
-            else:
-                print()
-                print("How do you not type in 1 or 2?")
-                print()
-        except ValueError:
-            print()
-            print("Let's try that again:")
-            print()
+    print("a^2 + b^2 = c^2 calculator")
+    a = ""
+    b = ""
+    c = ""
+
+    ask = input("What variable do you want to solve for? C for the hypotenuse and A/B for the two sides ")
+    if any(ask.lower() == f for f in ["a", "1"]):
+        b = input("Type In B: ")
+        while not b.isdigit():
+            print("That isnt a number! Retype it please!")
+            b = input("Type In B: ")
+        b = int(b)
+        c = input("Type In c: ")
+        while not c.isdigit():
+            print("That isnt a number! Retype it please!")
+            c = input("Type In c: ")
+        c = int(c)
+        a = math.sqrt(c ** 2 - b ** 2)
+        print("A = " + str(a))
+    if any(ask.lower() == f for f in ["b", "2"]):
+        a = input("Type In A: ")
+        while not a.isdigit():
+            print("That isnt a number! Retype it please!")
+            a = input("Type In A: ")
+        c = input("Type In c: ")
+        while not c.isdigit():
+            print("That isnt a number! Retype it please!")
+            c = input("Type In c: ")
+        c = int(c)
+        b = math.sqrt(int(c) ** 2 - int(a) ** 2)
+        print("B = " + str(b))
+    if any(ask.lower() == f for f in ["c", "3"]):
+        a = input("Type In A: ")
+        while not a.isdigit():
+            print("That isnt a number! Retype it please!")
+            a = input("Type In A: ")
+        b = input("Type In B: ")
+        while not b.isdigit():
+            print("That isnt a number! Retype it please!")
+            b = input("Type In B: ")
+        c = int(a) ** 2 + int(b) ** 2
+        if math.sqrt(c).is_integer():
+            c = int(math.sqrt(c))
+            print("C^2 = " + str(c))
+            c = int(c)
+        else:
+            print("C = " + "√" + str(c))
+            c = math.sqrt(c)
+            print("(Decimal) c = " + str(c))
+            c = "√" + str(int(a) ** 2 + int(b) ** 2)
+
+    a = int(a)
+    b = int(b)
+
+    X = np.array([[0 + int(a), 0], [0 + a, 0 + b], [0, 0]])
+    Y = ['red', 'red', 'red']
+
+    plt.figure()
+    plt.scatter(X[:, 0], X[:, 1], s=170, color=Y[:])
+    plt.grid()
+    t1 = plt.Polygon(X[:3, :], color=Y[0])
+    plt.gca().add_patch(t1)
+    plt.title("Triangle Grapher")
+    plt.text(a / 2, b / 2 + b / 8, 'Hypotenuse = ' + str(c), fontsize=10, bbox=dict(facecolor='red', alpha=0.5),
+             rotation=35)
+    plt.show()
 
 
 def sinrule():
@@ -136,7 +180,7 @@ def sinrule():
                     print(f"Unknown side = {side1} * {angle2} / sin({angle1})")
                     result = (side1 * math.sin(math.radians(angle1))) / math.sin(math.radians(angle2))
                     print()
-                    print(f"The unknown side is: {result} long (Don't forget the 3 significant figures rule)")
+                    print(f"The unknown side is: {round(result, 3)} long (Don't forget the 3 significant figures rule)")
                     print()
                     notfinished = False
                 elif mode == 2:
@@ -150,7 +194,7 @@ def sinrule():
                     print(f"Unknown angle = sin({side2} * sin({angle1})) / {side1}")
                     result = math.degrees(math.asin((side2 * math.sin(math.radians(angle1))) / side1))
                     print()
-                    print(f"The angle is: {result} degrees wide (Don't forget the 3 significant figure rule)")
+                    print(f"The angle is: {round(result, 3)} degrees wide (Don't forget the 3 significant figure rule)")
                     print()
                     notfinished = False
             else:
@@ -180,7 +224,7 @@ def cosrule():
                     calc = side1 ** 2 + side2 ** 2 - (2 * side1 * side2 * math.cos(math.radians(angle1)))
                     result = math.sqrt(calc)
                     print()
-                    print(f"The side is {result} long (3 significant figure rule")
+                    print(f"The side is {round(result, 3)} long (3 significant figure rule")
                     print()
                     notfinished = False
                 elif mode == 2:
@@ -197,9 +241,9 @@ def cosrule():
                     calc3 = (a ** 2 + b ** 2 - c ** 2) / (2 * a * b)
                     calcs = [calc1, calc2, calc3]
                     for calc in calcs:
-                        if calc >= -1 and calc <= 1:
+                        if -1 <= calc <= 1:
                             result = math.degrees(math.acos(calc))
-                            print(result)
+                            print(round(result, 3))
                     print("These are your angles")
                     notfinished = False
             else:
@@ -232,7 +276,7 @@ def rightangledtrig():
                         print(f"unknown side = {known1} / cos({angle})")
                         result = known1 / math.cos(math.radians(angle))
                         print()
-                        print(f"The side is {result} long")
+                        print(f"The side is {round(result, 3)} long")
                         print()
                     elif known == "o":
                         print("Opposite side is known, using sinus")
@@ -240,7 +284,7 @@ def rightangledtrig():
                         print(f"unknown side = {known1} / sin({angle})")
                         result = known1 / math.sin(math.radians(angle))
                         print()
-                        print(f"The side calculated is {result} long")
+                        print(f"The side calculated is {round(result, 3)} long")
                         print()
                 elif unknown == "a":
                     print("Adjacent side is unknown")
@@ -250,7 +294,7 @@ def rightangledtrig():
                         print(f"Unknown side = {known1} * cos ({angle})")
                         result = math.cos(math.radians(angle) * known1)
                         print()
-                        print(f"The side is {result} long")
+                        print(f"The side is {round(result, 3)} long")
                         print()
                     elif known == "o":
                         print("Opposite side known, using tan")
@@ -258,7 +302,7 @@ def rightangledtrig():
                         print(f"unknown side = {known1} / tan({angle})")
                         result = known1 / math.tan(math.radians(angle))
                         print()
-                        print(f"The side is {result} long")
+                        print(f"The side is {round(result, 3)} long")
                         print()
                 elif unknown == "o":
                     print("Opposite side is unknown")
@@ -268,7 +312,7 @@ def rightangledtrig():
                         print(f"unknown side = {known1} * sin({angle})")
                         result = math.sin(math.radians(angle)) * known1
                         print()
-                        print(f"The side is {result} long")
+                        print(f"The side is {round(result, 3)} long")
                         print()
                     elif known == "a":
                         print("Adjacent side known, using tan()")
@@ -276,7 +320,7 @@ def rightangledtrig():
                         print(f"Unknown side = {known1} * tan({angle})")
                         result = known1 * math.tan(math.radians(angle))
                         print()
-                        print(f"The side calculated is {result} long")
+                        print(f"The side calculated is {round(result, 3)} long")
                         print()
             else:
                 print("Please say either 'h', 'a', or 'o'")
@@ -303,7 +347,7 @@ def rightangledtriangle():
                     print(f"unknown angle = inv cos ({length2} / {length1})")
                     result = math.degrees(math.acos(length2 / length1))
                     print()
-                    print(f"Angle is {result} degrees")
+                    print(f"Angle is {round(result, 3)} degrees")
                     print()
                 elif known1 == "h" and known2 == "o":
                     print("Hypotenuse and opposite side known, using reverse sine")
@@ -311,7 +355,7 @@ def rightangledtriangle():
                     print(f"Unknown angle = inv sin({length2} / {length1})")
                     result = math.degrees(math.asin(length2 / length1))
                     print()
-                    print(f"Angle is {result} degrees")
+                    print(f"Angle is {round(result, 3)} degrees")
                     print()
                 elif known1 == "a" and known2 == "h":
                     print("Hypotenuse and adjacent side known, using reverse cosine")
@@ -319,7 +363,7 @@ def rightangledtriangle():
                     print(f"unknown angle = inv cos({length1} / {length2})")
                     result = math.degrees(math.acos(length1 / length2))
                     print()
-                    print(f"Your angle is {result} degrees")
+                    print(f"Your angle is {round(result, 3)} degrees")
                     print()
                 elif known1 == "o" and known2 == "a":
                     print("Opposite and adjacent side known, using reverse tangent")
@@ -327,7 +371,7 @@ def rightangledtriangle():
                     print(f"unknown angle = inv tan ({length2} = {length1})")
                     result = math.degrees(math.atan(length2 / length1))
                     print()
-                    print(f"Your angle is {result} degrees")
+                    print(f"Your angle is {round(result, 3)} degrees")
                     print()
                 notdone = False
             else:
@@ -347,13 +391,50 @@ def areatriangle():
             print(f"area = 0.5({length1} * {length2} * sin ({angle}))")
             result = 0.5 * length1 * length2 * math.sin(math.radians(angle))
             print()
-            print(f"The area of your Triangle is: {result}")
+            print(f"The area of your Triangle is: {round(result, 3)}")
             print()
             notfinished = False
         except ValueError:
             print()
             print("You didn't put in the right number, try again.")
             print()
+
+
+def graphing():
+    notfinished = True
+    add = 0
+    s = str(input("Enter function, f(x) is already included inside the code : "))  # Inputs function
+    temp = s
+    s = s.replace('x', '(x)')
+    ctr, x, y = -10, [], []  # Setting countert to starting values and x, y to empty lists
+    while ctr <= 10:
+        s1 = ''
+        add = 0
+        s1 = s.replace('x', str(ctr))  # Replaces variable with value at that point
+        try:
+            add = eval(s1)  # Tries to evaluate function at that point, if defined
+            y.append(add)
+            x.append(ctr)
+        except:
+            pass  # If beyond domain, pass
+        ctr += 0.1
+
+    plt.figure(num='GPYTHON')
+    plt.plot(x, y, label='y = ' + temp, color='black')
+    plt.xlabel('X Axis')
+    plt.ylabel('Y Axis')
+    ax = plt.gca()
+    plt.grid(True)
+    plt.legend(bbox_to_anchor=(1.1, 1.05))
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.spines['bottom'].set_position(('data', 0))
+    ax.yaxis.set_ticks_position('left')
+    ax.spines['left'].set_position(('data', 0))
+    plt.show()
+    plt.close()
+    notfinished = False
 
 
 while True:
