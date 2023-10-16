@@ -10,6 +10,8 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import ctypes
+from PIL import ImageTk, Image
+from tkinter import messagebox
 
 input("If a line of code gets stuck like this one, try hitting the \"Enter\" key on your keyboard!!!")
 print("You will have to login in order to continue")
@@ -33,50 +35,76 @@ def authenticate():
 
 
 def login_successful():
-    # Close the login window
-    tkWindow.destroy()
-
-    # Perform actions after a successful login
-    # You can open a new window or execute any code here.
+    message.set("Login successful")  # Display a success message
+    # Add your actions after successful login here
+    # For now, I'm just clearing the message
 
 
 def login_failed():
-    print("Login failed")
-    username.set("")
-    password.set("")
+    message.set("Login failed. Please try again.")  # Display a failure message
+    username.set("")  # Clear the username input field
+    password.set("")  # Clear the password input field
+
+
+def forget():
+    tkinter.messagebox.showinfo(title="Forgot your password?", message="email me @ bbis.de")
+    pass
 
 
 def on_closing():
-    login_failed()
-    sys.exit()
+    tkWindow.destroy()
 
-def forget():
-    print("Email my school email please")
+
+def need():
+    tkinter.messagebox.showinfo(title="Need a Password?", message="email me @ bbis.de")
 
 
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 tkWindow = Tk()
-tkWindow.geometry('600x300')
+tkWindow.geometry('700x500')
 tkWindow.title('Login')
+
+message = StringVar()
+message_label = Label(tkWindow, textvariable=message)
+message_label.grid(row=3, column=0, columnspan=2)
 
 usernameLabel = Label(tkWindow, text="User Name")
 usernameLabel.grid(row=0, column=0)
 username = StringVar()
 usernameEntry = Entry(tkWindow, textvariable=username)
-usernameEntry.grid(row=0, column=1)
+usernameEntry.grid(row=0, column=1, columnspan=5)
+
+path1 = "logo.jpg"
+
+original_image = Image.open(path1)
+scaled_image = original_image.resize((360, 200))
+img1 = ImageTk.PhotoImage(scaled_image)
+
+label1 = Label(tkWindow, image=img1)
+label1.place(x=200, y=0)
+
+path2 = "triglol.jpg"
+original_image = Image.open(path2)
+scaled_image = original_image.resize((466, 200))
+img2 = ImageTk.PhotoImage(scaled_image)
+
+label2 = Label(tkWindow, image=img2)
+label2.place(x=0, y=250)
 
 passwordLabel = Label(tkWindow, text="Password")
-passwordLabel.grid(row=1, column=0)
+passwordLabel.grid(row=2, column=0)
 password = StringVar()
 passwordEntry = Entry(tkWindow, textvariable=password, show='*')
-passwordEntry.grid(row=1, column=1)
+passwordEntry.grid(row=2, column=1)
 
 loginButton = Button(tkWindow, text="Login", command=authenticate)
-loginButton.grid(row=2, column=0, columnspan=2)
+loginButton.grid(row=3, column=0, columnspan=2)
 
-forgetpassword = Button(tkWindow, text="Forgot Password? \n email my school address @ Yifan", command=forget)
-forgetpassword.grid(row=3, column=0, columnspan=3)
+forgetpassword = Button(tkWindow, text="Forgot Password?", command=forget)
+forgetpassword.grid(row=4, column=0, columnspan=2)
 
+needpassword = Button(tkWindow, text="Need Password? ", command=need)
+needpassword.grid(row=5, column=0, columnspan=2)
 tkWindow.protocol("WM_DELETE_WINDOW", on_closing)
 tkWindow.mainloop()
 
