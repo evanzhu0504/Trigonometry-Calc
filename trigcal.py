@@ -21,29 +21,49 @@ user_credentials = {
 }
 
 
-def authenticate(username, password):
-    if username in user_credentials and user_credentials[username] == password:
-        return True
-    return False
+def authenticate():
+    username_input = username.get()
+    password_input = password.get()
+
+    if username_input in user_credentials and user_credentials[username_input] == password_input:
+        login_successful()
+    else:
+        login_failed()
 
 
-def mainauth():
-    print("Welcome to the login page")
+def login_successful():
+    # Close the login window
+    tkWindow.destroy()
 
-    while True:
-        username = pwinput.pwinput(prompt="Enter your username:")
-        password = pwinput.pwinput(prompt="Enter your password:")
-
-        if authenticate(username, password):
-            print("Authentication Success")
-            print("Enjoy the calculator!")
-            break
-        else:
-            print("Authentication Failed, please try again")
+    # Perform actions after a successful login
+    # You can open a new window or execute any code here.
 
 
-if __name__ == "__main__":
-    mainauth()
+def login_failed():
+    print("Login failed")
+    # You can show an error message or take other actions here.
+
+
+tkWindow = Tk()
+tkWindow.geometry('220x100')
+tkWindow.title('Login')
+
+usernameLabel = Label(tkWindow, text="User Name")
+usernameLabel.grid(row=0, column=0)
+username = StringVar()
+usernameEntry = Entry(tkWindow, textvariable=username)
+usernameEntry.grid(row=0, column=1)
+
+passwordLabel = Label(tkWindow, text="Password")
+passwordLabel.grid(row=1, column=0)
+password = StringVar()
+passwordEntry = Entry(tkWindow, textvariable=password, show='*')
+passwordEntry.grid(row=1, column=1)
+
+loginButton = Button(tkWindow, text="Login", command=authenticate)
+loginButton.grid(row=2, column=0, columnspan=2)
+
+tkWindow.mainloop()
 
 
 def trigcal():
@@ -420,7 +440,7 @@ def graphing():
         ctr += 0.1
 
     plt.figure(num='GPYTHON')
-    plt.plot(x, y, label='y = ' + temp, color='black')
+    plt.plot(x, y, label='y = ' + temp, color='blue')
     plt.xlabel('X Axis')
     plt.ylabel('Y Axis')
     ax = plt.gca()
