@@ -9,6 +9,7 @@ from math import *
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+import ctypes
 
 input("If a line of code gets stuck like this one, try hitting the \"Enter\" key on your keyboard!!!")
 print("You will have to login in order to continue")
@@ -41,11 +42,21 @@ def login_successful():
 
 def login_failed():
     print("Login failed")
-    # You can show an error message or take other actions here.
+    username.set("")
+    password.set("")
 
 
+def on_closing():
+    login_failed()
+    sys.exit()
+
+def forget():
+    print("Email my school email please")
+
+
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
 tkWindow = Tk()
-tkWindow.geometry('220x100')
+tkWindow.geometry('600x300')
 tkWindow.title('Login')
 
 usernameLabel = Label(tkWindow, text="User Name")
@@ -63,6 +74,10 @@ passwordEntry.grid(row=1, column=1)
 loginButton = Button(tkWindow, text="Login", command=authenticate)
 loginButton.grid(row=2, column=0, columnspan=2)
 
+forgetpassword = Button(tkWindow, text="Forgot Password? \n email my school address @ Yifan", command=forget)
+forgetpassword.grid(row=3, column=0, columnspan=3)
+
+tkWindow.protocol("WM_DELETE_WINDOW", on_closing)
 tkWindow.mainloop()
 
 
@@ -439,7 +454,7 @@ def graphing():
             pass  # If beyond domain, pass
         ctr += 0.1
 
-    plt.figure(num='GPYTHON')
+    plt.figure(num='Graphing Calculator')
     plt.plot(x, y, label='y = ' + temp, color='blue')
     plt.xlabel('X Axis')
     plt.ylabel('Y Axis')
