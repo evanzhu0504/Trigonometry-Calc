@@ -53,6 +53,7 @@ def forget():
 
 def on_closing():
     tkWindow.destroy()
+    sys.exit()
 
 
 def need():
@@ -61,7 +62,7 @@ def need():
 
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 tkWindow = Tk()
-tkWindow.geometry('700x500')
+tkWindow.geometry('800x500')
 tkWindow.title('Login')
 
 message = StringVar()
@@ -81,7 +82,7 @@ scaled_image = original_image.resize((360, 200))
 img1 = ImageTk.PhotoImage(scaled_image)
 
 label1 = Label(tkWindow, image=img1)
-label1.place(x=200, y=0)
+label1.place(x=400, y=0)
 
 path2 = "triglol.jpg"
 original_image = Image.open(path2)
