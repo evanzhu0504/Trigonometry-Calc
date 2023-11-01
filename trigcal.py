@@ -12,6 +12,7 @@ import numpy as np
 import ctypes
 from PIL import ImageTk, Image
 from tkinter import messagebox
+import easygui
 
 input("If a line of code gets stuck like this one, try hitting the \"Enter\" key on your keyboard!!!")
 print("You will have to login in order to continue")
@@ -35,13 +36,12 @@ def authenticate():
 
 
 def login_successful():
-    message.set("Login successful")  # Display a success message
-    # Add your actions after successful login here
-    # For now, I'm just clearing the message
-
+    tkinter.messagebox.showinfo(title="Success!", message="Check back your terminal after clicking OK")
+    tkWindow.destroy()
+    
 
 def login_failed():
-    message.set("Login failed. Please try again.")  # Display a failure message
+    tkinter.messagebox.showinfo(title="Failed", message="Retry after clicking OK")
     username.set("")  # Clear the username input field
     password.set("")  # Clear the password input field
 
@@ -58,6 +58,11 @@ def on_closing():
 
 def need():
     tkinter.messagebox.showinfo(title="Need a Password?", message="email me @ bbis.de")
+
+def create():
+    newusername = easygui.enterbox("What would you like your username to be?")
+    newpassword = easygui.enterbox("What would you like your new password to be")
+    user_credentials.update({newusername : newpassword})
 
 
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
@@ -90,7 +95,7 @@ scaled_image = original_image.resize((466, 200))
 img2 = ImageTk.PhotoImage(scaled_image)
 
 label2 = Label(tkWindow, image=img2)
-label2.place(x=0, y=250)
+label2.place(x=250, y=250)
 
 passwordLabel = Label(tkWindow, text="Password")
 passwordLabel.grid(row=2, column=0)
@@ -106,6 +111,9 @@ forgetpassword.grid(row=4, column=0, columnspan=2)
 
 needpassword = Button(tkWindow, text="Need Password? ", command=need)
 needpassword.grid(row=5, column=0, columnspan=2)
+
+createaccount = Button(tkWindow, text="Create a account", command = create)
+createaccount.grid(row=6, column=0, columnspan=2)
 tkWindow.protocol("WM_DELETE_WINDOW", on_closing)
 tkWindow.mainloop()
 
