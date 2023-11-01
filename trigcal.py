@@ -13,16 +13,31 @@ import ctypes
 from PIL import ImageTk, Image
 from tkinter import messagebox
 import easygui
+import json 
 
 input("If a line of code gets stuck like this one, try hitting the \"Enter\" key on your keyboard!!!")
 print("You will have to login in order to continue")
 
-user_credentials = {
-    "evantheboss": "1977",
-    "username2": "password2",
-    "username3": "password3",
+user_credentials = {}
 
-}
+def load_credentials():
+    try:
+        with open('credentials.json', 'r') as file:
+            user_credentials = json.load(file)
+    except FileNotFoundError:
+        user_credentials = {}  
+    return user_credentials
+
+if __name__ == '__main__':
+    user_credentials = load_credentials()
+
+def update_credentials(username, password):
+    user_credentials = load_credentials()
+    user_credentials[username] = password
+
+    with open('credentials.json', 'w') as file:
+        json.dump(user_credentials, file)
+
 
 
 def authenticate():
@@ -62,7 +77,8 @@ def need():
 def create():
     newusername = easygui.enterbox("What would you like your username to be?")
     newpassword = easygui.enterbox("What would you like your new password to be")
-    user_credentials.update({newusername : newpassword})
+    user_credentials.update({newusername: newpassword})
+    update_credentials(newusername, newpassword) 
 
 
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
