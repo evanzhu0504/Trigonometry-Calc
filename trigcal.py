@@ -10,8 +10,10 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import ctypes
+from ctypes import windll
 from PIL import ImageTk, Image
 from tkinter import messagebox
+from tkinter import simpledialog
 import easygui
 import json 
 
@@ -19,6 +21,7 @@ input("If a line of code gets stuck like this one, try hitting the \"Enter\" key
 print("You will have to login in order to continue")
 
 user_credentials = {}
+
 
 def load_credentials():
     try:
@@ -51,7 +54,7 @@ def authenticate():
 
 
 def login_successful():
-    tkinter.messagebox.showinfo(title="Success!", message="Check back your terminal after clicking OK")
+    tkinter.messagebox.showinfo(title="Success!", message="Success! Check back your terminal after clicking OK")
     tkWindow.destroy()
     
 
@@ -75,10 +78,16 @@ def need():
     tkinter.messagebox.showinfo(title="Need a Password?", message="email me @ bbis.de")
 
 def create():
+    font1 = "Arial"
     newusername = easygui.enterbox("What would you like your username to be?")
     newpassword = easygui.enterbox("What would you like your new password to be")
-    user_credentials.update({newusername: newpassword})
-    update_credentials(newusername, newpassword) 
+    if newusername == "":
+        easygui.textbox("Your username cannot be blank")
+    elif newpassword == "":
+        easygui.textbox("Your password connot be blank")
+    if newusername and newpassword != "":
+        user_credentials.update({newusername: newpassword})
+        update_credentials(newusername, newpassword) 
 
 
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
